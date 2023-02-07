@@ -1,10 +1,9 @@
 require('dotenv').config();
-const WebSocket = require('ws');
 const axios = require("axios").default;
 const crypto = require("crypto");
+const WebSocket = require('ws');
 
 const ws = new WebSocket(process.env.STREAM_URL + 'btcusdt@bookTicker');
-
 let isOpened = false;
 
 ws.onmessage = async (event) => {
@@ -13,12 +12,12 @@ ws.onmessage = async (event) => {
   console.log("Price: " + obj.a);
 
   const price = parseFloat(obj.a);
-  if (price < 22950 && !isOpened) {
+  if (price < 23000 && !isOpened) {
     console.log("Comprar!");
     newOrder("BTCUSDT", "0.001", "BUY");
     isOpened = true;
   } 
-  else if (price > 22940 && isOpened) {
+  else if (price > 23000 && isOpened) {
     console.log("Vender!");
     newOrder("BTCUSDT", "0.001", "SELL");
     isOpened = false;
@@ -42,5 +41,5 @@ async function newOrder(symbol, quantity, side) {
     url: process.env.API_URL + "/v3/order?" + new URLSearchParams(data),
     headers: { "X-MBX-APIKEY": process.env.API_KEY }
   })
-  console.log(result.data)
+  console.log(result.data);
 }
